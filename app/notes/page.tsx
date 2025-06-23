@@ -80,8 +80,8 @@ import {
   HydrationBoundary,
   dehydrate,
 } from "@tanstack/react-query";
-import { getSingleNote } from "../../../lib/api";
-import NoteDetailsClient from "./NoteDetails.client";
+import { getSingleNote } from "../../lib/api";
+import NoteDetailsClient from "./[id]/NoteDetails.client";
 
 type Props = {
   params: Promise<{ id: string }>;
