@@ -11,23 +11,23 @@ interface CategoriesMenuProps {
 
 const CategoriesMenu = ({ categories }: CategoriesMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => setIsOpen(true);
+  const toggleMenu = () => setIsOpen(isOpen ? false : true);
 
   return (
     <div className={css.menuContainer}>
-      <button onClick={toggle} className={css.menuBtn}>
+      <button onClick={toggleMenu} className={css.menuBtn}>
         Notes
       </button>
       {isOpen && (
         <ul className={css.menu}>
           <li className={css.menuItem}>
-            <Link href={`/notes/filter/all`} onClick={toggle}>
+            <Link href={`/notes/filter/all`} onClick={toggleMenu}>
               All notes
             </Link>
           </li>
           {categories.map((category) => (
             <li key={category.id} className={css.menuItem}>
-              <Link href={`/notes/filter/${category.id}`} onClick={toggle}>
+              <Link href={`/notes/filter/${category.id}`} onClick={toggleMenu}>
                 {category.name}
               </Link>
             </li>
