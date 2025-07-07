@@ -1,11 +1,8 @@
-// components/NoteForm/NoteForm.tsx
-
 "use client";
 
 import { Category, createNote, NewNoteData } from "@/lib/api";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-// 1. Імпортуємо хук
 import { useNoteDraftStore } from "@/lib/stores/noteStore";
 
 type Props = {
@@ -15,17 +12,13 @@ type Props = {
 const NoteForm = ({ categories }: Props) => {
   const router = useRouter();
 
-  // 2. Викликаємо хук і отримуємо значення
   const { draft, setDraft, clearDraft } = useNoteDraftStore();
 
-  // 3. Оголошуємо функцію для onChange щоб при зміні будь-якого
-  // елемента форми оновити чернетку нотатки в сторі
   const handleChange = (
     event: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
   ) => {
-    // 4. Коли користувач змінює будь-яке поле форми — оновлюємо стан
     setDraft({
       ...draft,
       [event.target.name]: event.target.value,
@@ -34,25 +27,24 @@ const NoteForm = ({ categories }: Props) => {
 
   const { mutate } = useMutation({
     mutationFn: createNote,
-    // 5. При успішному створенні нотатки очищуємо чернетку
     onSuccess: () => {
       clearDraft();
       router.push("/notes/filter/all");
     },
   });
 
-  const handleSubmit = (formData: FormData) => {
+  // виправлена функція handleSubmit — тепер працює через onSubmit подію форми
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
     const values = Object.fromEntries(formData) as NewNoteData;
     mutate(values);
   };
 
   const handleCancel = () => router.push("/notes/filter/all");
 
-  // 6. До кожного елемента додаємо defaultValue та onChange
-  // щоб задати початкове значення із чернетки
-  // та при зміні оновити чернетку в сторі
   return (
-    <form action={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <label>
         Title
         <input
@@ -75,7 +67,7 @@ const NoteForm = ({ categories }: Props) => {
       <label>
         Category
         <select
-          name="category"
+          name="categoryId"
           defaultValue={draft?.categoryId}
           onChange={handleChange}
         >

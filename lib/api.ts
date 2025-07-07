@@ -18,7 +18,12 @@ export type NoteListResponse = {
 };
 
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-axios.defaults.baseURL = "https://next-docs-api.onrender.com";
+// lib/api.ts
+
+const nextServer = axios.create({
+  baseURL: "http://localhost:3000/api",
+  withCredentials: true, // дозволяє axios працювати з cookie
+});
 
 // export const getNotes = async () => {
 //   // await delay(2000);
@@ -31,7 +36,7 @@ axios.defaults.baseURL = "https://next-docs-api.onrender.com";
 // Інший код файлу
 
 export const getSingleNote = async (id: string) => {
-  const res = await axios.get<Note>(`/notes/${id}`);
+  const res = await nextServer.get<Note>(`/notes/${id}`);
   return res.data;
 };
 
@@ -44,12 +49,12 @@ export type Category = {
 };
 
 export const getCategories = async () => {
-  const res = await axios<Category[]>("/categories");
+  const res = await nextServer.get<Category[]>("/categories");
   return res.data;
 };
 
 export const getNotes = async (categoryId?: string) => {
-  const res = await axios.get<NoteListResponse>("/notes", {
+  const res = await nextServer.get<NoteListResponse>("/notes", {
     params: { categoryId },
   });
   return res.data;
@@ -64,6 +69,6 @@ export type NewNoteData = {
 };
 
 export const createNote = async (data: NewNoteData) => {
-  const res = await axios.post<Note>("/notes", data);
+  const res = await nextServer.post<Note>("/notes", data);
   return res.data;
 };
