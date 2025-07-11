@@ -1,33 +1,41 @@
+// components/CategoriesMenu/CategoriesMenu.tsx
+
 "use client";
 
-import { useState } from "react";
-import css from "./CategoriesMenu.module.css";
-import { Category } from "../../lib/api";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Category, getCategories } from "@/lib/api";
+import css from "./CategoriesMenu.module.css";
 
-interface CategoriesMenuProps {
-  categories: Category[];
-}
+const CategoriesMenu = () => {
+  const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
 
-const CategoriesMenu = ({ categories }: CategoriesMenuProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleMenu = () => setIsOpen(isOpen ? false : true);
+  const toggle = () => setIsOpenMenu(isOpenMenu);
+
+  // Додаємо стан
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  // Додаємо ефект для запиту
+  useEffect(() => {
+    // Змінюємо стан
+    getCategories().then((data) => setCategories(data));
+  }, []);
 
   return (
     <div className={css.menuContainer}>
-      <button onClick={toggleMenu} className={css.menuBtn}>
+      <button onClick={toggle} className={css.menuBtn}>
         Notes
       </button>
-      {isOpen && (
+      {isOpenMenu && (
         <ul className={css.menu}>
           <li className={css.menuItem}>
-            <Link href={`/notes/filter/all`} onClick={toggleMenu}>
+            <Link href={`/notes/filter/all`} onClick={toggle}>
               All notes
             </Link>
           </li>
           {categories.map((category) => (
             <li key={category.id} className={css.menuItem}>
-              <Link href={`/notes/filter/${category.id}`} onClick={toggleMenu}>
+              <Link href={`/notes/filter/${category.id}`} onClick={toggle}>
                 {category.name}
               </Link>
             </li>
